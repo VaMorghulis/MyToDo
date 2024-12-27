@@ -6,6 +6,8 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:viewmodels="clr-namespace:MyToDo.ViewModels"
+             d:DataContext="{d:DesignInstance Type=viewmodels:IndexViewModel}"
              d:DesignHeight="450"
              d:DesignWidth="800"
              mc:Ignorable="d">
@@ -129,7 +131,7 @@
                 <!--内容拉伸  HorizontalContentAlignment="Stretch"-->
                 <ListBox x:Name="todoList"
                          HorizontalContentAlignment="Stretch"
-                         ItemsSource="{Binding ToDoDto}"
+                         ItemsSource="{Binding ToDoDtos}"
                          ScrollViewer.VerticalScrollBarVisibility="Hidden">
 
 
@@ -189,7 +191,7 @@
                 </DockPanel>
 
                 <ListBox x:Name="memoList"
-                         ItemsSource="{Binding MemoDto}"
+                         ItemsSource="{Binding MemoDtos}"
                          ScrollViewer.VerticalScrollBarVisibility="Hidden">
                     <!---隐藏滚动条 ScrollViewer.VerticalScrollBarVisibility="Hidden-->
 
