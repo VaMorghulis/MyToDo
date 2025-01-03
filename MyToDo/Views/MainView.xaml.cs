@@ -1,4 +1,5 @@
-﻿using MaterialDesignThemes.Wpf;
+﻿using DryIoc;
+using MaterialDesignThemes.Wpf;
 using MyToDo.Common;
 using MyToDo.Common.Models;
 using MyToDo.Extension;
@@ -11,7 +12,6 @@ using System.Windows.Input;
 namespace MyToDo.Views
 {
     /// <summary>
-    /// MainView.xaml 的交互逻辑
     /// </summary>
     public partial class MainView : Window
     {
@@ -20,8 +20,13 @@ namespace MyToDo.Views
         public MainView(IEventAggregator aggregator,IDialogHostService dialogHostService)
         {
             InitializeComponent();
+            
 
-          
+            //注册提示消息
+            aggregator.RegisterMessage(arg => {
+
+                MainSnackbar.MessageQueue.Enqueue(arg);
+            });
 
             //注册等待消息窗口 订阅事件
             aggregator.Register(arg =>

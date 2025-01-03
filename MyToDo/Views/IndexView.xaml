@@ -7,12 +7,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:viewmodels="clr-namespace:MyToDo.ViewModels"
+             xmlns:cv="clr-namespace:MyToDo.Common.Converters"
              d:DataContext="{d:DesignInstance Type=viewmodels:IndexViewModel}"
              d:DesignHeight="450"
              d:DesignWidth="800"
              mc:Ignorable="d">
     <UserControl.Resources>
-
+        <cv:IntToBoolConveter x:Key="intToBool" />
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -131,10 +132,8 @@
                 <!--内容拉伸  HorizontalContentAlignment="Stretch"-->
                 <ListBox x:Name="todoList"
                          HorizontalContentAlignment="Stretch"
-                         ItemsSource="{Binding ToDoDtos}"
+                         ItemsSource="{Binding Summary.ToDoList}"
                          ScrollViewer.VerticalScrollBarVisibility="Hidden">
-
-
 
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDoubleClick">
@@ -147,7 +146,10 @@
                         <DataTemplate>
                             <DockPanel MaxHeight="80"
                                        LastChildFill="False">
-                                <ToggleButton DockPanel.Dock="Right" />
+                                <ToggleButton DockPanel.Dock="Right"
+                                              IsChecked="{Binding Status,Converter={StaticResource intToBool}}"
+                                              Command="{Binding DataContext.ToDoCompltedCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ItemsControl}}"
+                                              CommandParameter="{Binding}" />
                                 <StackPanel>
                                     <TextBlock FontSize="16"
                                                FontWeight="Bold"
@@ -160,7 +162,6 @@
 
                         </DataTemplate>
                     </ListBox.ItemTemplate>
-
                 </ListBox>
             </DockPanel>
 
@@ -185,23 +186,20 @@
                             CommandParameter="新增备忘录"
                             VerticalAlignment="Top"
                             DockPanel.Dock="Right"
-                            Style="{StaticResource MaterialDesignFloatingActionButton}">
+                            Style="{StaticResource MaterialDesignFloatingActionAccentButton}">
                         <materialDesign:PackIcon Kind="Add" />
                     </Button>
                 </DockPanel>
 
                 <ListBox x:Name="memoList"
-                         ItemsSource="{Binding MemoDtos}"
+                         ItemsSource="{Binding Summary.MemoList}"
                          ScrollViewer.VerticalScrollBarVisibility="Hidden">
-                    <!---隐藏滚动条 ScrollViewer.VerticalScrollBarVisibility="Hidden-->
-
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDoubleClick">
                             <i:InvokeCommandAction Command="{Binding EditMemoCommand}"
                                                    CommandParameter="{Binding ElementName=memoList,Path=SelectedItem}" />
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
-
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel MaxHeight="80">

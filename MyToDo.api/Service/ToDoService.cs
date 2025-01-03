@@ -4,6 +4,8 @@ using MyToDo.api.Parameters;
 using MyToDo.Api;
 using MyToDo.Shared.Dtos;
 using System.Reflection.Metadata;
+using System.Collections.ObjectModel;
+using System;
 
 
 namespace MyToDo.api.Service
@@ -109,6 +111,40 @@ namespace MyToDo.api.Service
             catch (Exception ex)
             {
 
+                return new ApiResponse(false, ex.Message);
+            }
+        }
+
+        public async Task<ApiResponse> Summary()
+        {
+            try
+            {
+                var todo = await work.GetRepository<ToDo>().GetAllAsync(
+                    orderBy: sourse => sourse.OrderByDescending(t => t.CreateDate));
+
+                var memo = await work.GetRepository<Memo>().GetAllAsync(
+                    orderBy: s => s.OrderByDescending(t => t.CreateDate)
+                    );
+
+
+                SummaryDto summary= new SummaryDto();
+
+                summary.Sum = todo.Count();
+                summary.CompletedCount=todo.Where(t=>t.Status==1).Count();
+
+                //转换为百分比格式
+                summary.CompletedRatio = (summary.CompletedCount / (double)summary.Sum).ToString("0%");
+
+                summary.MemoCount = memo.Count();
+
+                summary.ToDoList = new ObservableCollection<ToDoDto>(mapper.Map<List<ToDoDto>>(todo.Where(t=>t.Status==0)));
+
+                summary.MemoList = new ObservableCollection<MemoDto>(mapper.Map<List<MemoDto>>(memo));
+
+                return new ApiResponse(true, summary);
+            }
+            catch (Exception ex) { 
+            
                 return new ApiResponse(false, ex.Message);
             }
         }
